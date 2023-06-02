@@ -55,6 +55,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/whatsappFirstImage.png
+    - assets/images/internetlogo.svg
 
 
   #   - images/a_dot_ham.jpeg
