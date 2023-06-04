@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-
-
-
+import 'loginPage.dart';
 
 class StartingPage extends StatelessWidget {
-
   int LanguageSelected = 1; // 1 - romana, 2 - engleza
   String welcomeText = "Bun venit pe WhatsApp";
   String welcomeText2 =
@@ -16,7 +13,6 @@ class StartingPage extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
-  
           children: [
             Image.asset('assets/images/whatsappFirstImage.png',
                 width: 400.0, height: 400.0),
@@ -36,8 +32,9 @@ class StartingPage extends StatelessWidget {
               child: ElevatedButton(
                   child: Text(btnText),
                   onPressed: () {
-
-                },
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => (LoginPage())));
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50.0),
@@ -51,41 +48,36 @@ class StartingPage extends StatelessWidget {
                       alignment: Alignment.bottomCenter,
                       child: DropdownButton<int>(
                         value: LanguageSelected,
-                items: [
-                  DropdownMenuItem(
-                    child: Text("Romana"),
-                    value: 1,
-                  ),
-                  DropdownMenuItem(
-                    child: Text("Engleza"),
-                    value: 2,
-                  ),
-                ],
-                onChanged: (value) {
-                  
-                  if (value == 1) {
+                        items: [
+                          DropdownMenuItem(
+                            child: Text("Romana"),
+                            value: 1,
+                          ),
+                          DropdownMenuItem(
+                            child: Text("Engleza"),
+                            value: 2,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value == 1) {
                             LanguageSelected = 1;
                             welcomeText = "Bine ai venit la WhatsApp";
                             welcomeText2 =
                                 "Citiți Politica de confidențialitate. Atingeți „Acceptați și continuați” pentru a accepta Condițiile de utilizare";
                             btnText = "Accepta si continua";
-                  } else {
+                          } else {
                             LanguageSelected = 2;
                             welcomeText = "Welcome to WhatsApp";
                             btnText = "Accept and continue";
                             welcomeText2 =
                                 "Read our Privacy Policy. Tap 'Agree and continue' to accept the Terms of Service";
-                  }
+                          }
                         },
                         icon: Icon(Icons.language),
                         hint: Text(selectLangBtn),
                       ),
                     )))
-           
-            
-                
           ],
-          
         ),
 
         // child: ElevatedButton(
@@ -105,4 +97,3 @@ class StartingPage extends StatelessWidget {
     );
   }
 }
-
