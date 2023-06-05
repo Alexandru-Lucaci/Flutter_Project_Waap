@@ -6,6 +6,8 @@ import 'problemeIntampinate.dart';
 import 'mainMessagePage.dart';
 
 class NewContact extends StatefulWidget {
+  // NewContact(Results? results);
+
   Results? results;
   NewContact(this.results);
 

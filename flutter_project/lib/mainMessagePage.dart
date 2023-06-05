@@ -92,7 +92,27 @@ class MyStateApp extends State<MainMessagePage> {
     var name = await conn.query('select * from accounts where id = ?', [id]);
     return name.elementAt(0)[1];
   }
+  
+  getLastDate([var id2]) async {
+    final conn = await MySqlConnection.connect(settings);
+    print('here i am i gues');
+    print(id2);
+    var id1 = results?.elementAt(0)[0];
 
+    var lastMessage = await conn.query(
+        'select created_at from messages where sender = ? and reciever = ? or sender = ? and reciever = ? ',
+        [id1, id2, id2, id1]);
+    print('here i am i gues2');
+    for (var row in lastMessage) {
+      print(row);
+    }
+    conn.close();
+    try {
+      return [lastMessage.elementAt(lastMessage.length - 1)[0]];
+    } catch (e) {
+      return ['Last message'];
+    }
+  }
   getIdFromName(name) async {
     var conn = await MySqlConnection.connect(settings);
     var id = await conn.query('select * from accounts where name = ?', [name]);
@@ -252,8 +272,9 @@ class MyStateApp extends State<MainMessagePage> {
                                       .split(',')
                                       .length,
                                   itemBuilder: (BuildContext context, index) {
-                                    return ListTile(
-                                      title: Text(snapshot.data![index]),
+                                    try {
+                                      return ListTile(
+                                        title: Text(snapshot.data![index]),
                                       subtitle: FutureBuilder(
                                           future: getLastMessage(
                                               results
@@ -281,28 +302,14 @@ class MyStateApp extends State<MainMessagePage> {
                                                     ProblemeIntampinate()))
                                       },
                                       // date in the right
-                                      trailing: Column(
-                                        children: [
-                                          Text('12:00'),
-                                          Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                                color: Colors.green,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        50.0)),
-                                            child: Center(
-                                              child: Text(
-                                                '1',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    );
+                                        trailing: Text('date'),
+                                      );
+                                    } catch (e) {
+                                      return ListTile(
+                                        title: Text('No friends'),
+                                      );
+                                    }
+                                    
                                   });
                             } else {
                               return const CircularProgressIndicator();
