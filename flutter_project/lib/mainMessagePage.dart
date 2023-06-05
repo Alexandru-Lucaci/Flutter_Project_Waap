@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
 import 'dart:async';
 import 'problemeIntampinate.dart';
-import 'registerPage.dart';
+import 'registerPage.dart'; 
+import 'chatView.dart';
 import 'NewContact.dart';
 class MainMessagePage extends StatefulWidget {
   Results? results;
@@ -23,7 +24,7 @@ class MyStateApp extends State<MainMessagePage> {
   var numbers = ['+40', '+44'];
   var selectedNumber = '+40';
   var settings = ConnectionSettings(
-      host: 'localhost',
+      host: '192.168.100.67',
       port: 3306,
       user: 'root',
       password: 'alex852654',
@@ -303,7 +304,11 @@ class MyStateApp extends State<MainMessagePage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ProblemeIntampinate()))
+                                                      ChatView(
+                                                          results,
+                                                          results
+                                                              ?.elementAt(0)[0],
+                                                          index)))
                                       },
                                       // date in the right
                                         trailing: FutureBuilder(

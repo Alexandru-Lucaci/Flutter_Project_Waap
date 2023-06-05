@@ -4,6 +4,7 @@ import 'package:flutter_project/mainMessagePage.dart';
 import 'package:mysql1/mysql1.dart';
 import 'dart:async';
 import 'problemeIntampinate.dart';
+import 'package:sqflite/sqflite.dart';
 import 'registerPage.dart';
 import 'mainMessagePage.dart';
 class LoginPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class MyStateApp extends State<LoginPage> {
   var numbers = ['+40', '+44'];
   var selectedNumber = '+40';
   var settings = ConnectionSettings(
-      host: 'localhost',
+      host: '192.168.100.67',
       port: 3306,
       user: 'root',
       password: 'alex852654',
