@@ -95,7 +95,7 @@ class MyStateApp extends State<MainMessagePage> {
   
   getLastDate([var id2]) async {
     final conn = await MySqlConnection.connect(settings);
-    print('here i am i gues');
+    print('connected');
     print(id2);
     var id1 = results?.elementAt(0)[0];
 
@@ -108,7 +108,11 @@ class MyStateApp extends State<MainMessagePage> {
     }
     conn.close();
     try {
-      return [lastMessage.elementAt(lastMessage.length - 1)[0]];
+      print(lastMessage.elementAt(lastMessage.length - 1)[0].runtimeType);
+      return [
+        DateTime.fromMicrosecondsSinceEpoch(
+            lastMessage.elementAt(lastMessage.length - 1)[0] * 1000)
+      ];
     } catch (e) {
       return ['Last message'];
     }
@@ -302,9 +306,20 @@ class MyStateApp extends State<MainMessagePage> {
                                                     ProblemeIntampinate()))
                                       },
                                       // date in the right
-                                        trailing: Text('date'),
+                                        trailing: FutureBuilder(
+                                          future: getLastDate(index),
+                                          builder: (context, snapshot10) {
+                                            if (snapshot10.hasData) {
+                                              return Text(
+                                                  snapshot10.data.toString());
+                                            } else {
+                                              return const Text('date');
+                                            }
+                                          },
+                                        ),
                                       );
                                     } catch (e) {
+                                      print(e);
                                       return ListTile(
                                         title: Text('No friends'),
                                       );
@@ -318,14 +333,14 @@ class MyStateApp extends State<MainMessagePage> {
                         )),
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.red),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
+                // Expanded(
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       border: Border.all(color: Colors.red),
+                //       borderRadius: BorderRadius.circular(10.0),
+                //     ),
+                //   ),
+                // ),
               ],
             );
           } else {
