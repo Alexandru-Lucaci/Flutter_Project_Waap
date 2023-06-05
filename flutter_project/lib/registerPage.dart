@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/mainMessagePage.dart';
 // import 'package:sqflite/sqflite.dart';
 import 'package:mysql1/mysql1.dart';
 import 'dart:async';
 import 'problemeIntampinate.dart';
-import 'registerPage.dart';
 import 'mainMessagePage.dart';
-class LoginPage extends StatefulWidget {
+
+class RegisterPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return MyStateApp();
   }
 }
 
-class MyStateApp extends State<LoginPage> {
+class MyStateApp extends State<RegisterPage> {
 // data members
   int? data = 0;
   var accounts = 'accounts';
@@ -27,6 +26,7 @@ class MyStateApp extends State<LoginPage> {
       db: 'flutter_proj');
 
   TextEditingController nameController = TextEditingController();
+  TextEditingController suggestedName = TextEditingController();
   var inputNumber = '';
   @override
   void dispose() {
@@ -69,6 +69,7 @@ class MyStateApp extends State<LoginPage> {
           );
         });
   }
+
   Widget GetBody() =>
       Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         const SizedBox(height: 20.0),
@@ -82,27 +83,25 @@ class MyStateApp extends State<LoginPage> {
             ),
           ),
           child: DropdownButton<int>(
-          value: data,
-          items: const [
-            DropdownMenuItem(
-              child:  Text("România"),
-              
-              value: 0,
-            ),
-            DropdownMenuItem(
-              child:  Text("United Kindom"),
-              value: 1,
-            ),
-          ],
-          onChanged: (value) {
-            setState(() {
-              data = value;
-              selectedNumber = numbers[value!];
-            });
-          },
+            value: data,
+            items: const [
+              DropdownMenuItem(
+                child: Text("România"),
+                value: 0,
+              ),
+              DropdownMenuItem(
+                child: Text("United Kindom"),
+                value: 1,
+              ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                data = value;
+                selectedNumber = numbers[value!];
+              });
+            },
+          ),
         ),
-        ),
-        
         const SizedBox(height: 15.0),
         Center(
             child: Row(
@@ -111,10 +110,10 @@ class MyStateApp extends State<LoginPage> {
             Container(
               decoration: const BoxDecoration(
                   border: Border(
-                      bottom: BorderSide(color: Colors.green, width: 2),
-                      )),
+                bottom: BorderSide(color: Colors.green, width: 2),
+              )),
               child: SizedBox(
-                width: 100.0,
+                width: 30.0,
                 height: 30.0,
                 child: Text(
                   selectedNumber,
@@ -131,17 +130,34 @@ class MyStateApp extends State<LoginPage> {
                 height: 30.0,
                 child: TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Număr de telefon',
                   ),
-                  
                 ),
               ),
             ),
-            
           ],
         )),
+        const SizedBox(height: 15.0),
+        Center(
+          child: Container(
+            decoration: const BoxDecoration(
+                border:
+                    Border(bottom: BorderSide(color: Colors.green, width: 2))),
+            child: SizedBox(
+              width: 250.0,
+              height: 30.0,
+              child: TextField(
+                controller: suggestedName,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nume de utilizator sugerat',
+                ),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 15.0),
         const Text(
           "Este posibil ca operatorul să perceapă taxe",
@@ -149,14 +165,12 @@ class MyStateApp extends State<LoginPage> {
           style: TextStyle(fontSize: 18.0),
         ),
         const SizedBox(height: 50.0),
-    
         Expanded(
             child: Padding(
                 padding: EdgeInsets.only(bottom: 25.0),
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: 
-                  Container(
+                  child: Container(
                     width: 100.0,
                     height: 30.0,
                     child: ElevatedButton(
@@ -166,47 +180,44 @@ class MyStateApp extends State<LoginPage> {
                             final conn =
                                 await MySqlConnection.connect(settings);
 
-                            // get the data from the input field
-                            // var name = nameController.text;
+                            var inputName = suggestedName.text;
                             inputNumber = nameController.text;
                             var results = await conn.query(
                                 'select * from accounts where number = ?',
                                 [inputNumber]);
-                            print(selectedNumber);
-                            for (var row in results) {
-                              print(
-                                  'Name: ${row[0]}, name: ${row[1]}, number: ${row[2]}, region: ${row[3]}');
-                            }
-                            var selectedRegion;
-                            if (selectedNumber == '+40') {
-                              selectedRegion = 'RO';
-                            } else {
-                              selectedRegion = 'UK';
-                            }
-                            if (results.isEmpty) {
-                              responsePopUp('Numarul de telefon nu exista',
-                                  'Numarul de telefon nu exista in baza de date. Va rugam sa va creati un cont.');
-                            } else {
+                            var results2 = await conn.query(
+                                'select * from accounts where name = ?',
+                                [inputName]);
 
-                              if (checkConnection(
-                                  true,
-                                  results.elementAt(0)[2],
-                                  results.elementAt(0)[3],
-                                  inputNumber,
-                                  selectedRegion)) {
-                                responsePopUp('Numarul de telefon exista',
-                                    'Va vom conecta imediat  la contul dvs.');
-                                conn.close();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            (MainMessagePage(results))));
+                            if (results.isEmpty && results2.isEmpty) {
+                              responsePopUp('Creare cont nou',
+                                  'Contul a fost creat cu succes. Vă logăm imediat');
+                              if (selectedNumber == '+40') {
+                                selectedNumber = 'RO';
                               } else {
-                                responsePopUp(
-                                    'Numarul de telefon nu se potriveste',
-                                    'Numarul de telefon nu exista in baza de date. Va rugam sa va creati un cont.');
+                                selectedNumber = 'UK';
                               }
+                              var maximId = await conn
+                                  .query('select max(id) from accounts');
+                              results = await conn.query(
+                                  'insert into accounts (id,name, number, region) values (?,?, ?, ?)',
+                                  [
+                                    maximId.first[0] + 1,
+                                    inputName,
+                                    inputNumber,
+                                    selectedNumber
+                                  ]);
+                              results = await conn.query(
+                                  'select * from accounts where id = ?',
+                                  [maximId.first[0] + 1]);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          (MainMessagePage(results))));
+                            } else {
+                              responsePopUp(
+                                  'Cont existent', 'incercati din nou');
                             }
                           } catch (e) {
                             print(e);
@@ -216,22 +227,11 @@ class MyStateApp extends State<LoginPage> {
                                   return AlertDialog(
                                     title: Text('Fail $e'),
                                     content: const Text(
-                                        'Trying to connect to the default account.'),
+                                        'Try to login with the default account .'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          if (inputNumber == '0745881174') {
-                                            if (selectedNumber == '+40') {
-                                              responsePopUp(
-                                                  'Numarul de telefon exista',
-                                                  'Va vom conecta imediat  la contul dvs.');
-                                            } else {
-                                              responsePopUp(
-                                                  'Numarul de telefon nu exista',
-                                                  'Numarul de telefon nu exista in baza de date. Va rugam sa va creati un cont.');
-                                            }
-                                          }
                                         },
                                         child: const Text('OK'),
                                       ),
@@ -253,7 +253,7 @@ class MyStateApp extends State<LoginPage> {
   Widget build(BuildContext context) => MaterialApp(
           home: Scaffold(
         appBar: AppBar(
-            title: Text("Introduceți numărul de telefon"),
+            title: Text("înregistrare Număr de telefon"),
             foregroundColor: Colors.green,
             backgroundColor: Colors.white,
             leading: IconButton(
@@ -265,11 +265,7 @@ class MyStateApp extends State<LoginPage> {
             actions: <Widget>[
               PopupMenuButton<int>(
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 1,
-                    child: Text("Creaza un cont"),
-                  ),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 2,
                     child: Text("Ajutor"),
                   ),
@@ -281,11 +277,6 @@ class MyStateApp extends State<LoginPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => (ProblemeIntampinate())));
-                    } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => (RegisterPage())));
                     }
                   });
                 },
