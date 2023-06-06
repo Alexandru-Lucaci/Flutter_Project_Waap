@@ -7,6 +7,7 @@ import 'problemeIntampinate.dart';
 import 'package:sqflite/sqflite.dart';
 import 'registerPage.dart';
 import 'mainMessagePage.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -21,7 +22,7 @@ class MyStateApp extends State<LoginPage> {
   var numbers = ['+40', '+44'];
   var selectedNumber = '+40';
   var settings = ConnectionSettings(
-      host: '192.168.100.67',
+      host: '192.168.43.142',
       port: 3306,
       user: 'root',
       password: 'alex852654',
@@ -70,6 +71,7 @@ class MyStateApp extends State<LoginPage> {
           );
         });
   }
+
   Widget GetBody() =>
       Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         const SizedBox(height: 20.0),
@@ -83,27 +85,25 @@ class MyStateApp extends State<LoginPage> {
             ),
           ),
           child: DropdownButton<int>(
-          value: data,
-          items: const [
-            DropdownMenuItem(
-              child:  Text("România"),
-              
-              value: 0,
-            ),
-            DropdownMenuItem(
-              child:  Text("United Kindom"),
-              value: 1,
-            ),
-          ],
-          onChanged: (value) {
-            setState(() {
-              data = value;
-              selectedNumber = numbers[value!];
-            });
-          },
+            value: data,
+            items: const [
+              DropdownMenuItem(
+                child: Text("România"),
+                value: 0,
+              ),
+              DropdownMenuItem(
+                child: Text("United Kindom"),
+                value: 1,
+              ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                data = value;
+                selectedNumber = numbers[value!];
+              });
+            },
+          ),
         ),
-        ),
-        
         const SizedBox(height: 15.0),
         Center(
             child: Row(
@@ -112,8 +112,8 @@ class MyStateApp extends State<LoginPage> {
             Container(
               decoration: const BoxDecoration(
                   border: Border(
-                      bottom: BorderSide(color: Colors.green, width: 2),
-                      )),
+                bottom: BorderSide(color: Colors.green, width: 2),
+              )),
               child: SizedBox(
                 width: 100.0,
                 height: 30.0,
@@ -136,11 +136,9 @@ class MyStateApp extends State<LoginPage> {
                     border: OutlineInputBorder(),
                     labelText: 'Număr de telefon',
                   ),
-                  
                 ),
               ),
             ),
-            
           ],
         )),
         const SizedBox(height: 15.0),
@@ -150,14 +148,12 @@ class MyStateApp extends State<LoginPage> {
           style: TextStyle(fontSize: 18.0),
         ),
         const SizedBox(height: 50.0),
-    
         Expanded(
             child: Padding(
                 padding: EdgeInsets.only(bottom: 25.0),
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: 
-                  Container(
+                  child: Container(
                     width: 100.0,
                     height: 30.0,
                     child: ElevatedButton(
@@ -188,7 +184,6 @@ class MyStateApp extends State<LoginPage> {
                               responsePopUp('Numarul de telefon nu exista',
                                   'Numarul de telefon nu exista in baza de date. Va rugam sa va creati un cont.');
                             } else {
-
                               if (checkConnection(
                                   true,
                                   results.elementAt(0)[2],
@@ -252,7 +247,10 @@ class MyStateApp extends State<LoginPage> {
       ]);
   @override
   Widget build(BuildContext context) => MaterialApp(
-          home: Scaffold(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
+      home: Scaffold(
         appBar: AppBar(
             title: Text("Introduceți numărul de telefon"),
             foregroundColor: Colors.green,

@@ -20,7 +20,10 @@ class MyStateApp extends State<ProblemeIntampinate> {
       ]));
   @override
   Widget build(BuildContext context) => MaterialApp(
-          home: Scaffold(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
+      home: Scaffold(
         appBar: AppBar(
             title: Text("Problemă întâmpinată"),
             foregroundColor: Colors.green,

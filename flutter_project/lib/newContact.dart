@@ -24,7 +24,7 @@ class MyStateApp extends State<NewContact> {
   var numbers = ['+40', '+44'];
   var selectedNumber = '+40';
   var settings = ConnectionSettings(
-      host: 'localhost',
+      host: '192.168.43.142',
       port: 3306,
       user: 'root',
       password: 'alex852654',
@@ -126,7 +126,10 @@ class MyStateApp extends State<NewContact> {
       ]);
   @override
   Widget build(BuildContext context) => MaterialApp(
-          home: Scaffold(
+      theme: ThemeData(brightness: Brightness.light),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
+      home: Scaffold(
         appBar: AppBar(
             title: Text("Contact nou"),
             foregroundColor: Colors.black87,
